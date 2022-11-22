@@ -1,6 +1,22 @@
 const fs = require('fs');
 const os = require('os');
 
+// var spawn = require("child_process").spawn, child;
+// child = spawn("powershell.exe", ["c:\\temp\\helloworld.ps1"]);
+// child.stdout.on("data", function (data) {
+//     console.log("Powershell Data: " + data);
+// });
+// child.stderr.on("data", function (data) {
+//     console.log("Powershell Errors: " + data);
+// });
+// child.on("exit", function () {
+//     console.log("Powershell Script finished");
+// });
+// child.stdin.end();
+
+const { exec } = require('child_process');
+
+
 const GIFS_DIR = 'gifs';
 
 var windowsUser = os.userInfo().username;
@@ -16,4 +32,6 @@ gifs.forEach(g => {
     fs.unlinkSync(`${GIFS_DIR}/${g}`);
 });
 
-console.log("Now Quit and Restart your Teams.");
+exec('Taskkill /IM Teams.exe /F', { 'shell': 'powershell.exe' }, (error, stdout, stderr) => {
+    exec(`Start-Process -File $env:LOCALAPPDATA\\Microsoft\\Teams\\Update.exe -ArgumentList '--processStart "Teams.exe"'`, { 'shell': 'powershell.exe' }, (error, stdout, stderr) => { });
+});
