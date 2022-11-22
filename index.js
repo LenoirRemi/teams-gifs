@@ -1,29 +1,19 @@
+// Import dependencies
 const fs = require('fs');
 const os = require('os');
-
-// var spawn = require("child_process").spawn, child;
-// child = spawn("powershell.exe", ["c:\\temp\\helloworld.ps1"]);
-// child.stdout.on("data", function (data) {
-//     console.log("Powershell Data: " + data);
-// });
-// child.stderr.on("data", function (data) {
-//     console.log("Powershell Errors: " + data);
-// });
-// child.on("exit", function () {
-//     console.log("Powershell Script finished");
-// });
-// child.stdin.end();
-
 const { exec } = require('child_process');
 
-
+// relative path to the folder containing gifs
 const GIFS_DIR = 'gifs';
 
-var windowsUser = os.userInfo().username;
+// Window username
+const windowsUser = os.userInfo().username;
 
+// List gifs
 const dirCont = fs.readdirSync(GIFS_DIR);
 const gifs = dirCont.filter(f => f.match(/.*\.(gif?)/ig));
 
+// Migrate gifs to Backgrounds with _thumb files.
 gifs.forEach(g => {
     let renameFilename = g.replace('.gif', '.png');
     let renameFilenameThumb = g.replace('.gif', '_thumb.png');
@@ -32,6 +22,5 @@ gifs.forEach(g => {
     fs.unlinkSync(`${GIFS_DIR}/${g}`);
 });
 
-exec('Taskkill /IM Teams.exe /F', { 'shell': 'powershell.exe' }, (error, stdout, stderr) => {
-    exec(`Start-Process -File $env:LOCALAPPDATA\\Microsoft\\Teams\\Update.exe -ArgumentList '--processStart "Teams.exe"'`, { 'shell': 'powershell.exe' }, (error, stdout, stderr) => { });
-});
+// Restart Teams (Kill and Restart)
+exec(`Taskkill /IM Teams.exe /F; Start-Process -File $env:LOCALAPPDATA\\Microsoft\\Teams\\Update.exe -ArgumentList '--processStart "Teams.exe"'`, { 'shell': 'powershell.exe' });
