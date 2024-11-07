@@ -14,8 +14,8 @@ const GIFS_DIR = 'gifs';
 const windowsUser = os.userInfo().username;
 
 // List gifs
-const dirCont = fs.readdirSync(GIFS_DIR);
-const gifs = dirCont.filter(f => f.match(/.*\.(gif?)/ig));
+const dirContent = fs.readdirSync(GIFS_DIR);
+const gifs = dirContent.filter(f => f.match(/.*\.(gif?)/ig));
 
 // Migrate gifs to Backgrounds with _thumb files.
 if (classicTeams) {
@@ -31,13 +31,14 @@ if (classicTeams) {
     });
 } else {
     // Microsoft Teams new (2024)
+    const msteamsFolder = fs.readdirSync(`C:/Users/${windowsUser}/AppData/Local/Packages/`).filter(item => item.startsWith('MSTeams_'))[0];
     gifs.forEach(g => {
         const uuid = uuidv4();
         const renameFilename = `${uuid}.png`;
         const renameFilenameThumb = `${uuid}_thumb.png`;
         try {
-            fs.copyFileSync(`${GIFS_DIR}/${g}`, `C:/Users/${windowsUser}/AppData/Local/Packages/MSTeams_8wekyb3d8bbwe/LocalCache/Microsoft/MSTeams/Backgrounds/Uploads/${renameFilename}`);
-            fs.copyFileSync(`${GIFS_DIR}/${g}`, `C:/Users/${windowsUser}/AppData/Local/Packages/MSTeams_8wekyb3d8bbwe/LocalCache/Microsoft/MSTeams/Backgrounds/Uploads/${renameFilenameThumb}`);
+            fs.copyFileSync(`${GIFS_DIR}/${g}`, `C:/Users/${windowsUser}/AppData/Local/Packages/${msteamsFolder}/LocalCache/Microsoft/MSTeams/Backgrounds/Uploads/${renameFilename}`);
+            fs.copyFileSync(`${GIFS_DIR}/${g}`, `C:/Users/${windowsUser}/AppData/Local/Packages/${msteamsFolder}/LocalCache/Microsoft/MSTeams/Backgrounds/Uploads/${renameFilenameThumb}`);
             fs.unlinkSync(`${GIFS_DIR}/${g}`);
         } catch (error) { }
     });
